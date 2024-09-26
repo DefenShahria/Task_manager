@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:task1/ui/screens/auth/signinScreen.dart';
 import 'package:task1/ui/state_holder/controller/signUpController.dart';
 
@@ -203,6 +204,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                             if (_formkey.currentState!
                                                 .validate()) {
                                               verifySignup(signUpController);
+                                              Get.offAll(const SignInPage());
                                             }
                                           },
                                           style: ElevatedButton.styleFrom(
@@ -254,23 +256,24 @@ class _SignUpPageState extends State<SignUpPage> {
 
   Future<void> verifySignup(SignUpController signUpController) async {
     final response = await signUpController.verifySignup(
-
       _emailTEC.text.trim(),
       _fnameTEC.text.trim(),
       _lnameTEC.text.trim(),
       _phoneTEC.text.trim(),
-      _passwordTEC.text.trim()
-
+      _passwordTEC.text.trim(),
     );
+
     if (response) {
-      Get.to(const SignInPage());
+      Get.offAll(const SignInPage());
     } else {
-      Get.to(const SignInPage());
+      context.go('/SignIn');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Wrong Information! Try Again')));
+          const SnackBar(content: Text('Wrong Information! Try Again')),
+        );
       }
     }
   }
+
 
 }

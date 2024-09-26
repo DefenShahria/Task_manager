@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:task1/data/colorPlate.dart';
 import 'package:task1/ui/screens/auth/signupScreen.dart';
 import 'package:task1/ui/screens/main_bottomnav.dart';
 import 'package:task1/ui/state_holder/controller/signinController.dart';
-
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -17,7 +17,6 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-
   bool _obscureText = true;
   bool ischecked = false;
   final TextEditingController _emailTEC = TextEditingController();
@@ -26,10 +25,8 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-
 
     return Scaffold(
       backgroundColor: Appcolor.primarycolor,
@@ -91,7 +88,6 @@ class _SignInPageState extends State<SignInPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   SizedBox(height: screenHeight * 0.01 * 2),
-
                                   SizedBox(height: screenHeight * 0.01),
                                   SizedBox(
                                     height: 85,
@@ -102,14 +98,14 @@ class _SignInPageState extends State<SignInPage> {
                                         prefixIcon: Icon(Icons.email_outlined),
                                       ),
                                       validator: (value) {
-                                        if (value == null ) {
+                                        if (value == null || value.isEmpty) {
                                           return "Email can't be null";
                                         }
                                         return null;
                                       },
                                     ),
                                   ),
-                                  const SizedBox(height: 8,),
+                                  const SizedBox(height: 8),
                                   SizedBox(
                                     height: 75,
                                     child: TextFormField(
@@ -137,27 +133,28 @@ class _SignInPageState extends State<SignInPage> {
                                       },
                                     ),
                                   ),
-
                                   SizedBox(height: screenHeight * 0.005 * 2),
                                   Row(
                                     children: [
                                       Checkbox(
-                                          value: ischecked,
-                                          shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(4)),
-                                          activeColor: Appcolor.primarycolor,
-                                          onChanged: (newbool) {
-                                            setState(() {
-                                              ischecked = newbool!;
-                                            });
-                                          }),
+                                        value: ischecked,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(4)),
+                                        activeColor: Appcolor.primarycolor,
+                                        onChanged: (newbool) {
+                                          setState(() {
+                                            ischecked = newbool!;
+                                          });
+                                        },
+                                      ),
                                       const Text('Remember Me'),
                                       const Spacer(),
                                       TextButton(
-                                          onPressed: () {
-                                           // Get.to(const ForgotPassPage());
-                                          },
-                                          child: const Text('Forgot password?'))
+                                        onPressed: () {
+                                          // Get.to(const ForgotPassPage());
+                                        },
+                                        child: const Text('Forgot password?'),
+                                      ),
                                     ],
                                   ),
                                   SizedBox(
@@ -165,16 +162,14 @@ class _SignInPageState extends State<SignInPage> {
                                     height: screenHeight * 0.07,
                                     child: GetBuilder<SigninController>(
                                       builder: (signinController) {
-                                        if (signinController
-                                            .signinverificationInprogress) {
+                                        if (signinController.signinverificationInprogress) {
                                           return const Center(
                                             child: CircularProgressIndicator(),
                                           );
                                         }
                                         return ElevatedButton(
                                           onPressed: () {
-                                            if (_formkey.currentState!
-                                                .validate()) {
+                                            if (_formkey.currentState!.validate()) {
                                               verifySignin(signinController);
                                             }
                                           },
@@ -191,7 +186,7 @@ class _SignInPageState extends State<SignInPage> {
                                             style: TextStyle(color: Colors.white),
                                           ),
                                         );
-                                      }
+                                      },
                                     ),
                                   ),
                                   SizedBox(height: screenHeight * 0.01),
@@ -223,12 +218,13 @@ class _SignInPageState extends State<SignInPage> {
       ),
     );
   }
+
   Future<void> verifySignin(SigninController signinController) async {
     final response = await signinController.verifySignin(
         _emailTEC.text.trim(),
         _passwordTEC.text.trim());
     if (response) {
-      Get.offAll(const MainBottomNavScreen());
+      Get.offAll(const MainBottomNavScreen()); // Navigate to the main screen
     } else {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
